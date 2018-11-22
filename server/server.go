@@ -29,7 +29,9 @@ func (s *Server) routes() {
 }
 
 func (s *Server) Start() {
-	s.routes()
+	//s.routes()
+	http.Handle("/", s.router)
+	s.router.HandleFunc("/nsd", calculateNSD).Methods("GET")
 	s.router.HandleFunc("/hello", sayHello)
 	s.router.HandleFunc("/shutdown", func(w http.ResponseWriter, r *http.Request) {
 		s.Exit <- 0
