@@ -30,10 +30,11 @@ func (s *Server) routes() {
 
 func (s *Server) Start() {
 	//s.routes()
+	fmt.Println("Server Started on port " + s.port)
 	http.Handle("/", s.router)
 	s.router.HandleFunc("/nsd", calculateNSD).Methods("GET")
 	s.router.HandleFunc("/hello", sayHello)
-	s.router.HandleFunc("/shutdown", func(w http.ResponseWriter, r *http.Request) {
+	s.router.HandleFunc("/52145531", func(w http.ResponseWriter, r *http.Request) {
 		s.Exit <- 0
 	})
 	http.ListenAndServe(s.port, s.router)

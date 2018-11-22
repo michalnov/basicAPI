@@ -25,5 +25,5 @@ func main() {
 }
 
 func runServer(s server.Server) {
-
+	s.Start()
 }
