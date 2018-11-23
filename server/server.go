@@ -1,6 +1,7 @@
 package server
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -9,9 +10,10 @@ import (
 )
 
 type Server struct {
-	router *mux.Router
-	Exit   chan int
-	port   string
+	router   *mux.Router
+	Exit     chan int
+	port     string
+	shutdown string
 }
 
 func NewServer(port string, exit chan int) (error, Server) {
@@ -28,15 +30,25 @@ func (s *Server) routes() {
 
 }
 
+type shutdownAuth struct {
+	token string `json:"token"`
+}
+
 func (s *Server) Start() {
 	//s.routes()
 	fmt.Println("Server Started on port " + s.port)
+	s.shutdown = ""
 	http.Handle("/", s.router)
-	s.router.HandleFunc("/nsd", calculateNSD).Methods("GET")
+	s.router.HandleFunc("/gcd", calculateNSD).Methods("POST")
 	s.router.HandleFunc("/hello", sayHello)
-	s.router.HandleFunc("/52145531", func(w http.ResponseWriter, r *http.Request) {
-		s.Exit <- 0
-	})
+	s.router.HandleFunc("/shutdown", func(w http.ResponseWriter, r *http.Request) {
+		var auth shutdownAuth
+		_ = json.NewDecoder(r.Body).Decode(&auth)
+		if auth.token == s.shutdown {
+			s.Exit <- 0
+		}
+
+	}).Methods("POST")
 	http.ListenAndServe(s.port, s.router)
 }
 
