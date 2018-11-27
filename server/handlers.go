@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-var primes []int = initPrimes()
+var primes = initPrimes()
 
 func initPrimes() []int {
 	out := make([]int, 2)
@@ -36,7 +36,7 @@ func calculateNSD(w http.ResponseWriter, r *http.Request) {
 	primesA := make([]int, 0)
 	primesB := make([]int, 0)
 
-	input := NSDN{}
+	input := nSDN{}
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		w.WriteHeader(404)
@@ -45,33 +45,33 @@ func calculateNSD(w http.ResponseWriter, r *http.Request) {
 	largest := 0
 
 	for _, element := range primes {
-		if input.NumA%element == 0 && element < input.NumA {
+		if input.First%element == 0 && element < input.First {
 			primesA = append(primesA, element)
 		}
-		if input.NumB%element == 0 && element < input.NumB {
+		if input.Second%element == 0 && element < input.Second {
 			primesB = append(primesB, element)
 		}
-		if input.NumA < element && input.NumB < element {
+		if input.First < element && input.Second < element {
 			break
 		}
-		if input.NumB%element == 0 && input.NumA%element == 0 {
+		if input.Second%element == 0 && input.First%element == 0 {
 			largest = element
 		}
 	}
 
-	output := NSDN{Response: largest}
-	fin, err := json.Marshal(output)
+	input.Response = largest
+	fin, err := json.Marshal(input)
 	if err != nil {
 		w.WriteHeader(500)
 	}
 	fmt.Fprintf(w, string(fin))
-
 }
 
-type NSDN struct {
-	NumA     int `json:"first`
-	NumB     int `json:"second"`
-	Response int `json:"gcd"`
+//
+type nSDN struct {
+	First    int `json:"first,omitempty`
+	Second   int `json:"second,omitempty"`
+	Response int `json:"gcd",ommitempty,omitempty`
 }
 
 func sayHello(w http.ResponseWriter, r *http.Request) {

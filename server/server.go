@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+//Server : server structure
 type Server struct {
 	router   *mux.Router
 	Exit     chan int
@@ -16,25 +17,27 @@ type Server struct {
 	shutdown string
 }
 
-func NewServer(port string, exit chan int) (error, Server) {
+//NewServer : method to create new server object
+func NewServer(port string, exit chan int) (Server, error) {
 	out := Server{router: mux.NewRouter(), Exit: exit, port: port}
 	if exit == nil || len(port) < 2 {
-		return errors.New("Internal exception"), out
+		return out, errors.New("Internal exception")
 	}
-	return nil, out
+	return out, nil
 }
 
 func (s *Server) routes() {
 	http.Handle("/", s.router)
-	s.router.HandleFunc("/nsd", calculateNSD).Methods("GET")
+	s.router.HandleFunc("/nsd", calculateNSD).Methods("POST")
 
 }
 
 type shutdownAuth struct {
-	token string `json:"token"`
+	Token string `json:"token,omitempty"`
 }
 
-func (s *Server) Start() {
+//Start : method to execute server
+func (s *Server) Start(key string) {
 	//s.routes()
 	fmt.Println("Server Started on port " + s.port)
 	s.shutdown = ""
@@ -44,7 +47,7 @@ func (s *Server) Start() {
 	s.router.HandleFunc("/shutdown", func(w http.ResponseWriter, r *http.Request) {
 		var auth shutdownAuth
 		_ = json.NewDecoder(r.Body).Decode(&auth)
-		if auth.token == s.shutdown {
+		if auth.Token == key {
 			s.Exit <- 0
 		}
 
