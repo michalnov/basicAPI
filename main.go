@@ -13,7 +13,7 @@ func helloServer() {
 func main() {
 	var exit = make(chan int)
 	//var serv server.Server
-	err, serv := server.NewServer(":1201", exit)
+	serv, err := server.NewServer(":1201", exit)
 	if err != nil {
 		fmt.Println("Error while creating server")
 		return

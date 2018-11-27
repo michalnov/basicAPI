@@ -33,13 +33,17 @@ func initPrimes() []int {
 }
 
 func calculateNSD(w http.ResponseWriter, r *http.Request) {
+	println("ahooj")
 	primesA := make([]int, 0)
 	primesB := make([]int, 0)
 
 	input := nSDN{}
+	//some, err := r.Body.Read()
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
+		println("shit happens")
 		w.WriteHeader(404)
+
 	}
 
 	largest := 0
@@ -64,6 +68,7 @@ func calculateNSD(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(500)
 	}
+	w.WriteHeader(200)
 	fmt.Fprintf(w, string(fin))
 }
 
