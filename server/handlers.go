@@ -71,15 +71,12 @@ func calculateNSD(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 	fmt.Fprintf(w, string(fin))
 }
-func aaa(w http.ResponseWriter, r *http.Request) {
-	print("skuska")
-}
 
 //
 type nSDN struct {
-	First    int `json:"first,omitempty`
+	First    int `json:"first,omitempty"`
 	Second   int `json:"second,omitempty"`
-	Response int `json:"gcd",ommitempty,omitempty`
+	Response int `json:"gcd,ommitempty,omitempty"`
 }
 
 func sayHello(w http.ResponseWriter, r *http.Request) {

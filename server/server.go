@@ -40,9 +40,9 @@ type shutdownAuth struct {
 func (s *Server) Start(key string) {
 	//s.routes()
 	fmt.Println("Server Started on port " + s.port)
-	s.shutdown = ""
+	s.shutdown = key
 	http.Handle("/", s.router)
-	s.router.HandleFunc("/gcd", aaa)
+	s.router.HandleFunc("/gcd", calculateNSD).Methods("POST")
 	s.router.HandleFunc("/hello", sayHello)
 	s.router.HandleFunc("/shutdown", func(w http.ResponseWriter, r *http.Request) {
 		var auth shutdownAuth
@@ -58,12 +58,3 @@ func (s *Server) Start(key string) {
 func notImplemented() {
 	fmt.Printf("Not implemented")
 }
-
-/*fmt.Println("Run server on port: " + s.conf.port)
-http.Handle("/", s.router)
-s.router.HandleFunc("/hello", handler.Hello_Handler).Methods("GET")
-s.router.HandleFunc("/shutdown", func(w http.ResponseWriter, r *http.Request) {
-	s.Terminate <- 0
-})
-http.ListenAndServe(s.conf.port, s.router)
-*/
