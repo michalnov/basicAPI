@@ -71,6 +71,9 @@ func calculateNSD(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 	fmt.Fprintf(w, string(fin))
 }
+func aaa(w http.ResponseWriter, r *http.Request) {
+	print("skuska")
+}
 
 //
 type nSDN struct {
