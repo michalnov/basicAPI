@@ -43,6 +43,19 @@ func (s *Server) Start(key string) {
 	s.shutdown = key
 	http.Handle("/", s.router)
 	s.router.HandleFunc("/gcd", calculateNSD).Methods("POST")
+	s.router.HandleFunc("/abcd", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		var resp source
+		resp.Things = primes
+		out, err := json.Marshal(resp)
+		if err != nil {
+			fmt.Println("shit shit shit")
+			w.WriteHeader(http.StatusBadRequest)
+		}
+		fmt.Fprintf(w, (string) out)
+
+	})
 	s.router.HandleFunc("/hello", sayHello)
 	s.router.HandleFunc("/shutdown", func(w http.ResponseWriter, r *http.Request) {
 		var auth shutdownAuth
@@ -50,7 +63,6 @@ func (s *Server) Start(key string) {
 		if auth.Token == key {
 			s.Exit <- 0
 		}
-
 	}).Methods("POST")
 	http.ListenAndServe(s.port, s.router)
 }

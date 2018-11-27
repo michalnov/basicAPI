@@ -13,7 +13,7 @@ func initPrimes() []int {
 	out := make([]int, 2)
 	out[0] = 2
 	cod := 0
-	for index := 3; index < 5000; index++ {
+	for index := 3; index < 500; index++ {
 		if index%2 == 0 {
 			continue
 		}
@@ -32,8 +32,13 @@ func initPrimes() []int {
 	return out
 }
 
+type source struct {
+	Things []int `json:"list,omitempty"`
+}
+
 func calculateNSD(w http.ResponseWriter, r *http.Request) {
-	println("ahooj")
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Println("aaaa")
 	primesA := make([]int, 0)
 	primesB := make([]int, 0)
 
@@ -41,9 +46,10 @@ func calculateNSD(w http.ResponseWriter, r *http.Request) {
 	//some, err := r.Body.Read()
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
-		println("shit happens")
+		fmt.Println("shit happens")
 		w.WriteHeader(404)
-
+		fmt.Fprintf(w, "error:\"unexpected\"")
+		return
 	}
 
 	largest := 0
@@ -67,6 +73,8 @@ func calculateNSD(w http.ResponseWriter, r *http.Request) {
 	fin, err := json.Marshal(input)
 	if err != nil {
 		w.WriteHeader(500)
+		fmt.Fprintf(w, "error:\"internal\"")
+		return
 	}
 	w.WriteHeader(200)
 	fmt.Fprintf(w, string(fin))
