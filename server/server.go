@@ -53,7 +53,7 @@ func (s *Server) Start(key string) {
 			fmt.Println("shit shit shit")
 			w.WriteHeader(http.StatusBadRequest)
 		}
-		fmt.Fprintf(w, (string) out)
+		fmt.Fprintf(w, string(out))
 
 	})
 	s.router.HandleFunc("/hello", sayHello)

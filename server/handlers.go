@@ -10,6 +10,7 @@ import (
 var primes = initPrimes()
 
 func initPrimes() []int {
+	fmt.Println("initialization")
 	out := make([]int, 2)
 	out[0] = 2
 	cod := 0
@@ -29,6 +30,7 @@ func initPrimes() []int {
 			out = append(out, index)
 		}
 	}
+	fmt.Println("Done init")
 	return out
 }
 
